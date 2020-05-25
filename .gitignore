@@ -1,0 +1,4 @@
+/target
+/data/log/*.log
+/data/config/*.toml
+/data/config/*.yml

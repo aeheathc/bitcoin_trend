@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+html{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-decoration-skip-ink: none;
+	font-size:16px;
+}
+
+body{
+	text-align:center;
+}
+
+#price_chart_container{
+	max-height:80%;
+}
+
+#slider{
+	max-width:90%;
+	margin: 0 auto 0 auto;
+}
+
+#spinner{
+	display:none;
+	height:3em;
+	width:3em;
+}
