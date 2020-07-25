@@ -45,6 +45,7 @@ impl Settings
 
     # Examples
     ```
+    use bitcoin_trend::settings::*;
     let def_settings: Settings = Settings{
         startup: Startup{
             working_dir: String::from("data"),
@@ -61,7 +62,7 @@ impl Settings
 
     let default_config_file_contents = def_settings.to_toml();
 
-    assert_eq!(default_config_file_contents[..30],"[startup]\nworking_dir = \"data\"");
+    assert_eq!(&default_config_file_contents[..30],"[startup]\nworking_dir = \"data\"");
     ```
     */
     pub fn to_toml(&self) -> String

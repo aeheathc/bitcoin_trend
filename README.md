@@ -12,13 +12,7 @@ After several minutes of compiling and data import, the app will be available at
 If you want the app to be on some other port due to conflicts, first edit docker-compose.yml. Find the item 4000:80 and change 4000 to be whatever port you want.
 
 ## Caveats
-- The spec said to have a default range of the last 24 hours and that input sanity checks include making sure the range isn't so large that the dataset slows down the UI. I interpreted this as intending to allow simpler logic in processing the data. However, since this program is capable of displaying any date range quickly, I made the default range be the entire dataset because it looks better. You can still adjust the slider to very small ranges if you want.
-- There will be a gap in the data between 2020-04-22 and when you first start the app in your environment. The kaggle page linked in the spec doesn't seem to have the "feed" mentioned in the spec, only an archive of past data that ends at 2020-04-22. The app does keep itself updated using the Bitstamp API, but that only provides the current prices (updating hourly) and no historical data -- thus, the gap. If you let the app run for 24 hours, then the "past 24 hours" chart will look much better. That said, the app interpolates and extrapolates as necessary, for missing data inside the valid range, so it shouldn't look too bad either way.
-- The spec said to use Dockerfiles for each component. I took this to mean making the run process as simple as possible and not requiring very long commands to run. In truth I specified everything in the docker-compose.yml instead of using any Dockerfiles. I don't have a strong opinion on this approach -- I have never used Docker before and this seemed like the easiest way.
-
-## Other decisions
-- JSON is used for the AJAX responses because it was the easiest; actix has builtin support for returning JSON.
-- Rust was used for the backend because I hadn't used actix before and wanted to learn something new.
+- There will be a gap in the data between "the end date of the historical data at the time it was pulled from kaggle" and "when you first start the app in your environment". The app does keep itself updated using the Bitstamp API, but that only provides the current prices (updating hourly) and no historical data -- thus, the gap. If you let the app run for 24 hours, then the "past 24 hours" chart will look much better. That said, the app interpolates and extrapolates as necessary, for missing data inside the valid range, so it shouldn't look too bad either way.
 - The app uses config files, and there are a few ways of solving the problem of delivering the default config while having the actual file in your .gitignore to allow local config changes to not show up as changes in Git. In this project I chose to not provide the default config as a physical file, and have the program generate the file with default values if it is not present.
 
 ## Other things you can do with the code

@@ -35,7 +35,7 @@ Will panic if the function is unable to look into the RwLock containing the conn
 
 # Examples
 ```no_run
-mod sql;
+use bitcoin_trend::sql;
 let mut db = match sql::connect(){
     Ok(d) => d,
     Err(e) => {panic!("Database error: {}",e);}
@@ -105,8 +105,8 @@ Result indicating whether the query was successful.
 
 # Examples
 ```no_run
-mod sql;
-let (segment_size: u64, segment_size: u64, begin: u64, end: u64) = (85500, 85500, 1338893400, 1347443400);
+use bitcoin_trend::sql;
+let (segment_size, begin, end): (u64,u64,u64) = (85500, 1338893400, 1347443400);
 let mut db = sql::connect().unwrap();
 let query = "SELECT a,b FROM prices WHERE c=?,d=?,e=?,f=?";
 let prices = sql::query_select::<(u64,u64,u64,u64),(u64,u32)>(
@@ -156,8 +156,8 @@ Result indicating whether the query was successful.
 
 # Examples
 ```no_run
-mod sql;
-let (timestamp: u64, price_cents: u32) = (2354354, 10000);
+use bitcoin_trend::sql;
+let (timestamp, price_cents): (u64,u32) = (2354354, 10000);
 let mut db = sql::connect().unwrap();
 let ins_query = "INSERT INTO `price_history` SET `when`=?, `price_cents`=?";
 sql::query(&mut db, ins_query, (timestamp, price_cents), "adding new data point from Bitstamp to database").unwrap();

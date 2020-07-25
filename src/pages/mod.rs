@@ -1,57 +1,9 @@
-extern crate clap;
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate serde;
-
-use actix_web::{web, App, HttpResponse, HttpServer, http::header, http::StatusCode};
+use actix_web::{web, HttpResponse, http::header, http::StatusCode};
 use actix_http::ResponseBuilder;
-use log::{/*error, warn,*/ info, /*debug, trace, log, Level*/};
+/*use log::{error, warn, info, debug, trace, log, Level};*/
 use std::cmp;
-use std::thread;
 
-mod settings;
-use settings::SETTINGS;
-mod sql;
-mod updater;
-
-/**
-Main entry point.
-
-This first ensures the database is in a good state, then starts the ongoing threads for
-the database updater and the HTTP listener.
-Note that before execution even gets here, the configuration and logger have already been set up by
-the lazy_static code in the settings module.
-
-# Returns
-Result, but only when actix-web fails to bind to the port we want to use for HTTP.
-
-# Panics
-Will panic if something went wrong ensuring correct database state on startup.
-*/
-#[actix_rt::main]
-async fn main() -> std::io::Result<()>
-{
-    info!("Starting bitcoin_trend on {}", &SETTINGS.startup.listen_addr);
-
-    //Initialize the DB if necessary, bail if we couldn't
-    if !updater::db_init() {panic!("Couldn't initialize database, see log for details.");}
-    
-    //Keep the DB updated while the app runs
-    thread::spawn(|| { updater::updater(); });
-
-    //Start the HTTP server
-    HttpServer::new(|| {
-        App::new()
-            .route("/", web::get().to(index))                            // request for root: this delivers the main app page that users see
-            .route("/api/prices/{begin}/{end}", web::get().to(api))     // ajax calls get recieved here, we split part of the path into args
-            .service(actix_files::Files::new("/static", "static").disable_content_disposition())   // serve static files from given dir
-            .default_service(web::route().to(notfound))                  // where to go when nothing else matches
-    })
-    .bind(&SETTINGS.startup.listen_addr)?
-    .run()
-    .await
-}
+use crate::sql;
 
 /**
 Responds to requests for the main page at the domain root.
@@ -59,7 +11,7 @@ Responds to requests for the main page at the domain root.
 # Returns
 HttpResponse containing the main page, which is the same every time -- everything dynamic is in the frontend code.
 */
-async fn index() -> HttpResponse
+pub async fn index() -> HttpResponse
 {
     let body = "<div id='price_chart_container'><canvas id='price_chart'></canvas></div><br/><div id='slider'></div><br/><span id='begin'></span> - <span id='end'></span><img src='static/loading.gif' id='spinner'/>";
     let head = "<script>$( function() {chart_init();});</script>";
@@ -85,7 +37,7 @@ The HttpResponse can also indicate failure, which happens when anything goes wro
 invalid input or a database error. In this case the body will still be JSON, but it will
 only contain a string describing the error.
 */
-async fn api(range: web::Path<(u64, u64)>) -> HttpResponse
+pub async fn api(range: web::Path<(u64, u64)>) -> HttpResponse
 {
     let mut db = match sql::connect(){
         Ok(d) => d,
@@ -103,7 +55,7 @@ async fn api(range: web::Path<(u64, u64)>) -> HttpResponse
     if end < begin {
         return ResponseBuilder::new(StatusCode::BAD_REQUEST)
         .set_header(header::CONTENT_TYPE, "application/json; charset=utf-8")
-        .json("begin (frst value) must be <= end (second value)");
+        .json("begin (first value) must be <= end (second value)");
     }
 
     /* Get prices for the range specified.
@@ -159,7 +111,7 @@ Responds to requests that don't match anything we have.
 # Returns
 HttpResponse indicating HTTP 404 Not Found.
 */
-async fn notfound() -> HttpResponse
+pub async fn notfound() -> HttpResponse
 {
     let html = html_construct("Not Found - Bitcoin Trend", "", "<h1>Not Found</h1><a href='/'>Return to Home</a>");
 
@@ -179,12 +131,6 @@ This is where we define all the external static resources included in every page
 
 # Returns
 String containing the HTML document.None
-
-# Examples
-```
-let html = html_construct("Not Found", "", "<h1>Not Found</h1><a href='/'>Return to Home</a>");
-assert_eq!(html[..15],"<!DOCTYPE html>");
-```
 */
 fn html_construct(title: &str, head_extra: &str, body: &str) -> String
 {

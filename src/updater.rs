@@ -39,7 +39,7 @@ Returns false on problems that are not immediately recoverable such as database 
 
 # Examples
 ```no_run
-mod updater;
+use bitcoin_trend::updater;
 
 //Initialize the DB if necessary, bail if we couldn't
 if !updater::db_init() {std::process::exit(1);}
@@ -125,7 +125,8 @@ In either case, it will log what went wrong.
 
 # Examples
 ```no_run
-mod updater;
+use bitcoin_trend::updater;
+use std::thread;
 //Keep the DB updated while the app runs
 thread::spawn(|| { updater::updater(); });
 ```

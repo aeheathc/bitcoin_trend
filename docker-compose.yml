@@ -4,7 +4,7 @@ services:
   app:
     image: rust:1.43
 #    command: sh -c "cargo install --path . && /usr/local/cargo/bin/bitcoin_trend"
-    command: sh -c "cargo build --release && /app/target/release/bitcoin_trend --workingdir=/app/data"
+    command: sh -c "cargo build --release && /app/target/release/main --workingdir=/app/data"
     ports:
       - 4000:80
     working_dir: /app
