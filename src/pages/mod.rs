@@ -141,12 +141,11 @@ fn html_construct(title: &str, head_extra: &str, body: &str) -> String
   <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
   <meta name='viewport' content='height=device-height, width=device-width, initial-scale=1'/>
   <link rel='shortcut icon' href='static/favicon.ico'/>
-  <script src='static/lib/jquery.min.js'></script>
-  <script src='static/lib/jquery-ui/jquery-ui.min.js'></script>
-  <script src='static/lib/moment-with-locales.js'></script>
-  <link rel='stylesheet' href='static/lib/jquery-ui/jquery-ui.min.css'/>
-  <script src='static/lib/chartjs/Chart.min.js'></script>
-  <link rel='stylesheet' href='static/lib/chartjs/Chart.min.css'/>
+  <script src='https://unpkg.com/jquery@3.5.1/dist/jquery.min.js'></script>
+  <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'/>
+  <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.min.js' integrity='sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=' crossorigin='anonymous'></script>
+  <script src='https://unpkg.com/moment@2.19.3/min/moment-with-locales.min.js'></script>
+  <script src='https://unpkg.com/chart.js@2.7.1/dist/Chart.min.js'></script>
   <script src='static/main.js'></script>
   <link rel='stylesheet' href='static/main.css'/>
   {}
